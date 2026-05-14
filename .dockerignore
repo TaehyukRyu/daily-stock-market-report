@@ -1,0 +1,41 @@
+# 가상환경 — 이미지 내부에서 별도 설치
+.venv/
+
+# Python 캐시
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+*.egg-info/
+dist/
+build/
+
+# 환경 변수 — 런타임에 볼륨 마운트
+.env
+
+# Git
+.git/
+.gitignore
+
+# 런타임 데이터 — 볼륨 마운트로 제공
+data/
+logs/
+
+# Windows 전용 설치 파일
+*.whl
+*.tar.gz
+
+# 실험/개발 전용 (프로덕션 이미지 불필요)
+experiments/
+tests/
+test_quick.py
+
+# IDE
+.vscode/
+.idea/
+*.iml
+
+# 문서
+*.md
+!README.md

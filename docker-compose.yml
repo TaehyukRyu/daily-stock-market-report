@@ -1,0 +1,60 @@
+services:
+
+  # ────────────────────────────────────────────────────────
+  # alphaflow-core — 메인 스케줄러 (src/scheduler.py)
+  # ────────────────────────────────────────────────────────
+  alphaflow-core:
+    build: .
+    image: alphaflow-core:latest
+    container_name: alphaflow-core
+    restart: unless-stopped
+
+    env_file: .env
+    environment:
+      PYTHONIOENCODING: "utf-8"
+      PYTHONUNBUFFERED: "1"
+      # ChromaDB HTTP 클라이언트 모드 전환용 (현재는 embedded 사용)
+      # chroma_store.py를 HttpClient로 업데이트하면 활성화
+      CHROMA_SERVER_HOST: "chromadb"
+      CHROMA_SERVER_PORT: "8000"
+
+    volumes:
+      # SQLite DB, 리포트 백업, 신호 파일, ChromaDB 데이터 (embedded 모드)
+      - ./data:/app/data
+      # 스케줄러 로그 (RotatingFileHandler → logs/scheduler.log)
+      - ./logs:/app/logs
+
+    depends_on:
+      chromadb:
+        condition: service_healthy
+
+  # ────────────────────────────────────────────────────────
+  # chromadb — ChromaDB HTTP 서버 (외부 접근 / 향후 HTTP 클라이언트 모드 대비)
+  #
+  # 현재: alphaflow-core는 embedded PersistentClient(data/chroma_db/)를 사용.
+  #       이 컨테이너는 동일 데이터 디렉토리를 공유하며 HTTP API 제공.
+  #
+  # 향후: chroma_store.py를 HttpClient(host="chromadb", port=8000)로 전환하면
+  #       alphaflow-core는 이 컨테이너에만 의존하게 됨 (쓰기 충돌 제거).
+  # ────────────────────────────────────────────────────────
+  chromadb:
+    image: chromadb/chroma:latest
+    container_name: alphaflow-chromadb
+    restart: unless-stopped
+
+    ports:
+      - "8000:8000"
+
+    volumes:
+      - ./data/chroma_db:/chroma/chroma
+
+    environment:
+      IS_PERSISTENT: "TRUE"
+      ANONYMIZED_TELEMETRY: "FALSE"
+
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/heartbeat"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s

@@ -1,0 +1,15 @@
+.env
+*.env
+__pycache__/
+*.pyc
+.DS_Store
+.venv/
+
+data/chroma_db/
+data/mentions.db
+data/reports/
+data/signals/
+logs/
+.claude/
+
+*.whl
