@@ -1,6 +1,6 @@
 <div align="center">
 
-# AlphaFlow
+# Daily-Stock-Market-Report
 
 **8명의 AI 애널리스트가 매일 시장을 토론하는 자율 운영 멀티 에이전트 시스템**
 
