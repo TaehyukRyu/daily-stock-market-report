@@ -545,7 +545,6 @@ ai-investment-report/
 
 | 항목 | 내용 |
 |---|---|
-| 📧 Email | `<your-email@example.com>` |
-| 🐙 GitHub | `https://github.com/<username>/<repo>` |
+| 📧 Email | `<xogur1578@gmail.com>` |
 
 ---
